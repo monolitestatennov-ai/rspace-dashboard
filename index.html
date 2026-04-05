@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSpace Support Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f0f1a; color:#e0e0e0; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:24px; max-width:1200px; margin:0 auto; }
+h1 { color:#fff; font-size:28px; margin-bottom:8px; }
+.subtitle { color:#888; font-size:14px; margin-bottom:24px; }
+.kpi-row { display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
+.kpi { background:#16213e; border-radius:12px; padding:20px; flex:1; min-width:180px; }
+.kpi-value { font-size:36px; font-weight:700; color:#fff; }
+.kpi-label { font-size:13px; color:#888; margin-top:4px; }
+.kpi.critical .kpi-value { color:#e94560; }
+.kpi.good .kpi-value { color:#4ecca3; }
+.charts-row { display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
+.chart-box { background:#16213e; border-radius:12px; padding:20px; flex:1; min-width:360px; }
+.chart-box h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.heatmap { background:#16213e; border-radius:12px; padding:20px; margin-bottom:24px; overflow-x:auto; }
+.heatmap h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.heatmap table { width:100%; border-collapse:collapse; font-size:13px; }
+.heatmap th { color:#888; padding:8px; text-align:center; border-bottom:1px solid #1a1a2e; font-weight:400; }
+.heatmap td { padding:8px; text-align:center; border-bottom:1px solid #1a1a2e; border-radius:4px; }
+.hm-label { text-align:left !important; color:#ccc; font-weight:500; max-width:200px; }
+.hm-0 { color:#333; }
+.hm-1 { background:#1a3a2a; color:#4ecca3; font-weight:600; }
+.hm-2 { background:#3a3a1a; color:#f0c040; font-weight:600; }
+.hm-3 { background:#3a1a1a; color:#e94560; font-weight:700; }
+.hm-4 { background:#5a1a1a; color:#ff6b6b; font-weight:700; }
+.top-section { margin-bottom:24px; }
+.top-section h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.top-cards { display:flex; gap:16px; flex-wrap:wrap; }
+.top-card { background:#16213e; border-radius:12px; padding:16px; flex:1; min-width:280px; border-left:4px solid #e94560; }
+.top-title { color:#fff; font-weight:600; font-size:15px; margin-bottom:6px; }
+.top-stats { color:#888; font-size:12px; margin-bottom:8px; }
+.example { color:#666; font-size:12px; font-style:italic; margin-top:6px; padding:8px 10px; background:#0f0f1a; border-radius:6px; line-height:1.4; }
+.footer { color:#444; font-size:11px; margin-top:32px; text-align:center; padding-top:16px; border-top:1px solid #1a1a2e; }
+</style>
+</head>
+<body>
+
+<h1>RSpace Support Dashboard</h1>
+<div class="subtitle">Служба поддержки | 2025-08 &mdash; 2026-03 | 105 инцидентов за 8 месяцев</div>
+
+<div class="kpi-row">
+    <div class="kpi"><div class="kpi-value">105</div><div class="kpi-label">Total Incidents</div></div>
+    <div class="kpi critical"><div class="kpi-value">32</div><div class="kpi-label">Critical</div></div>
+    <div class="kpi critical"><div class="kpi-value">12.4%</div><div class="kpi-label">Resolution Rate</div></div>
+    <div class="kpi good"><div class="kpi-value">0.7h</div><div class="kpi-label">Avg Fix Time</div></div>
+</div>
+
+<div class="charts-row">
+    <div class="chart-box">
+        <h3>Распределение по категориям</h3>
+        <canvas id="donut" height="260"></canvas>
+    </div>
+    <div class="chart-box">
+        <h3>Monthly Trend: Total vs Critical</h3>
+        <canvas id="trend" height="260"></canvas>
+    </div>
+</div>
+
+<div class="charts-row">
+    <div class="chart-box">
+        <h3>Resolved vs Unresolved (по месяцам)</h3>
+        <canvas id="stacked" height="260"></canvas>
+    </div>
+    <div class="chart-box">
+        <h3>Critical по категориям</h3>
+        <canvas id="critbar" height="260"></canvas>
+    </div>
+</div>
+
+<div class="heatmap">
+    <h3>Heatmap: категория &times; месяц</h3>
+    <table>
+        <tr><th style="text-align:left">Категория</th><th>25-08</th><th>25-09</th><th>25-10</th><th>25-11</th><th>25-12</th><th>26-01</th><th>26-02</th><th>26-03</th></tr>
+        <tr><td class="hm-label">Объявления: прочие ошибки</td><td class="hm-3">3</td><td class="hm-4">11</td><td class="hm-4">10</td><td class="hm-4">11</td><td class="hm-4">5</td><td class="hm-3">3</td><td class="hm-4">5</td><td class="hm-4">4</td></tr><tr><td class="hm-label">Прочие обращения</td><td class="hm-0"></td><td class="hm-2">2</td><td class="hm-4">4</td><td class="hm-0"></td><td class="hm-4">6</td><td class="hm-1">1</td><td class="hm-2">2</td><td class="hm-1">1</td></tr><tr><td class="hm-label">Оплата / биллинг</td><td class="hm-0"></td><td class="hm-0"></td><td class="hm-3">3</td><td class="hm-4">4</td><td class="hm-0"></td><td class="hm-2">2</td><td class="hm-1">1</td><td class="hm-3">3</td></tr><tr><td class="hm-label">Фиды: объект не должен быть вы</td><td class="hm-1">1</td><td class="hm-2">2</td><td class="hm-2">2</td><td class="hm-2">2</td><td class="hm-0"></td><td class="hm-1">1</td><td class="hm-0"></td><td class="hm-1">1</td></tr><tr><td class="hm-label">Доступ / авторизация</td><td class="hm-0"></td><td class="hm-3">3</td><td class="hm-2">2</td><td class="hm-1">1</td><td class="hm-0"></td><td class="hm-0"></td><td class="hm-0"></td><td class="hm-0"></td></tr><tr><td class="hm-label">Объявления сняты или не публик</td><td class="hm-1">1</td><td class="hm-0"></td><td class="hm-0"></td><td class="hm-0"></td><td class="hm-1">1</td><td class="hm-0"></td><td class="hm-2">2</td><td class="hm-1">1</td></tr>
+    </table>
+</div>
+
+<div class="top-section">
+    <h3>TOP-3 Recurring Issues</h3>
+    <div class="top-cards">
+        <div class="top-card">
+            <div class="top-title">Объявления: прочие ошибки</div>
+            <div class="top-stats">53 cases &bull; 15 critical &bull; 9% resolved</div>
+            <div class="example">&laquo;Ссылка на созвон по работе с админкой...&raquo;</div><div class="example">&laquo;Доброе утро. Не исправили по этой Веерной, нужно понять в чем причина и исправить. Спасибо...&raquo;</div>
+        </div>
+        <div class="top-card">
+            <div class="top-title">Прочие обращения</div>
+            <div class="top-stats">16 cases &bull; 2 critical &bull; 6% resolved</div>
+            <div class="example">&laquo;Мой вопрос потерялся Проблема актуальна...&raquo;</div><div class="example">&laquo;Никит, получилось добавить мощности? Так как у агента проблема не решилась...&raquo;</div>
+        </div>
+        <div class="top-card">
+            <div class="top-title">Оплата / биллинг</div>
+            <div class="top-stats">13 cases &bull; 5 critical &bull; 15% resolved</div>
+            <div class="example">&laquo;Ребят, скажите, а какая здесь логика выгрузки данного оповещения, что истекло, но при этом объект стоит в рекламе. Прост...&raquo;</div><div class="example">&laquo;Ребят, помогите, пожалуйста. Привязали с агентом карту, назначили подписку. Даже объект, который слетел, выставили в рек...&raquo;</div>
+        </div></div>
+</div>
+
+<div class="footer">Generated by RSpace Intelligence Pipeline &bull; Data: Служба поддержки Rspace TG &bull; 111 incidents analyzed</div>
+
+<script>
+const colors6 = ['#e94560','#f0c040','#4ecca3','#3a86ff','#8338ec','#ff6b6b'];
+
+new Chart(document.getElementById('donut'), {
+    type: 'doughnut',
+    data: {
+        labels: ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгруже", "Доступ / авторизация", "Объявления сняты или не публикуются"],
+        datasets: [{ data: [53, 16, 13, 9, 6, 5], backgroundColor: colors6, borderWidth: 0, borderRadius: 4 }]
+    },
+    options: {
+        cutout: '55%',
+        plugins: { legend: { position:'right', labels: { color:'#ccc', font: { size:11 }, padding:12 } } }
+    }
+});
+
+new Chart(document.getElementById('trend'), {
+    type: 'bar',
+    data: {
+        labels: ["25-08", "25-09", "25-10", "25-11", "25-12", "26-01", "26-02", "26-03"],
+        datasets: [
+            { label:'Total', data:[6, 19, 21, 18, 12, 7, 10, 11], backgroundColor:'#3a86ff88', borderRadius:4 },
+            { label:'Critical', data:[1, 7, 8, 3, 3, 2, 2, 6], backgroundColor:'#e9456088', borderRadius:4 }
+        ]
+    },
+    options: {
+        scales: { y: { ticks: { color:'#666' }, grid: { color:'#ffffff08' } }, x: { ticks: { color:'#888' }, grid: { display:false } } },
+        plugins: { legend: { labels: { color:'#ccc' } } }
+    }
+});
+
+new Chart(document.getElementById('stacked'), {
+    type: 'bar',
+    data: {
+        labels: ["25-08", "25-09", "25-10", "25-11", "25-12", "26-01", "26-02", "26-03"],
+        datasets: [
+            { label:'Resolved', data:[2, 2, 4, 1, 1, 0, 0, 3], backgroundColor:'#4ecca388', borderRadius:4 },
+            { label:'Unresolved', data:[4, 17, 17, 17, 11, 7, 10, 8], backgroundColor:'#e9456088', borderRadius:4 }
+        ]
+    },
+    options: {
+        scales: { x: { stacked:true, ticks:{ color:'#888' }, grid:{ display:false } }, y: { stacked:true, ticks:{ color:'#666' }, grid:{ color:'#ffffff08' } } },
+        plugins: { legend: { labels: { color:'#ccc' } } }
+    }
+});
+
+new Chart(document.getElementById('critbar'), {
+    type: 'bar',
+    data: {
+        labels: ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгруже", "Доступ / авторизация", "Объявления сняты или не публикуются"],
+        datasets: [
+            { label:'Total', data:[53, 16, 13, 9, 6, 5], backgroundColor:'#3a86ff88', borderRadius:4 },
+            { label:'Critical', data:[15, 2, 5, 3, 2, 2], backgroundColor:'#e9456088', borderRadius:4 }
+        ]
+    },
+    options: {
+        indexAxis:'y',
+        scales: { x: { ticks: { color:'#666' }, grid: { color:'#ffffff08' } }, y: { ticks: { color:'#ccc', font: { size:11 } }, grid: { display:false } } },
+        plugins: { legend: { labels: { color:'#ccc' } } }
+    }
+});
+</script>
+</body>
+</html>
