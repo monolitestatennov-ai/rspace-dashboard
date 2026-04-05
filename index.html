@@ -8,48 +8,63 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#0f0f1a; color:#e0e0e0; font-family:'Inter',system-ui,-apple-system,sans-serif; padding:24px; max-width:1200px; margin:0 auto; }
-h1 { color:#fff; font-size:28px; margin-bottom:8px; }
-.subtitle { color:#888; font-size:14px; margin-bottom:24px; }
+.header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+h1 { color:#fff; font-size:26px; }
+.subtitle { color:#888; font-size:13px; }
+.week-select { background:#16213e; color:#fff; border:1px solid #2a3a5e; border-radius:8px; padding:10px 16px; font-size:15px; font-weight:600; cursor:pointer; min-width:160px; }
+.week-select:focus { outline:none; border-color:#3a86ff; }
+.week-select option { background:#16213e; }
 .kpi-row { display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
-.kpi { background:#16213e; border-radius:12px; padding:20px; flex:1; min-width:180px; }
-.kpi-value { font-size:36px; font-weight:700; color:#fff; }
-.kpi-label { font-size:13px; color:#888; margin-top:4px; }
+.kpi { background:#16213e; border-radius:12px; padding:20px; flex:1; min-width:160px; position:relative; }
+.kpi-value { font-size:32px; font-weight:700; color:#fff; }
+.kpi-label { font-size:12px; color:#888; margin-top:4px; }
+.kpi-delta { font-size:12px; position:absolute; top:16px; right:16px; font-weight:600; }
+.delta-up { color:#e94560; }
+.delta-down { color:#4ecca3; }
+.delta-same { color:#888; }
 .kpi.critical .kpi-value { color:#e94560; }
 .kpi.good .kpi-value { color:#4ecca3; }
 .charts-row { display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
 .chart-box { background:#16213e; border-radius:12px; padding:20px; flex:1; min-width:360px; }
-.chart-box h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.chart-box h3 { color:#fff; font-size:15px; margin-bottom:12px; }
 .heatmap { background:#16213e; border-radius:12px; padding:20px; margin-bottom:24px; overflow-x:auto; }
-.heatmap h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.heatmap h3 { color:#fff; font-size:15px; margin-bottom:12px; }
 .heatmap table { width:100%; border-collapse:collapse; font-size:13px; }
 .heatmap th { color:#888; padding:8px; text-align:center; border-bottom:1px solid #1a1a2e; font-weight:400; }
-.heatmap td { padding:8px; text-align:center; border-bottom:1px solid #1a1a2e; border-radius:4px; }
-.hm-label { text-align:left !important; color:#ccc; font-weight:500; max-width:200px; }
-.hm-0 { color:#333; }
-.hm-1 { background:#1a3a2a; color:#4ecca3; font-weight:600; }
+.heatmap td { padding:8px; text-align:center; border-bottom:1px solid #1a1a2e; }
+.hm-label { text-align:left !important; color:#ccc; font-weight:500; }
+.hm-0 { color:#333; } .hm-1 { background:#1a3a2a; color:#4ecca3; font-weight:600; }
 .hm-2 { background:#3a3a1a; color:#f0c040; font-weight:600; }
 .hm-3 { background:#3a1a1a; color:#e94560; font-weight:700; }
 .hm-4 { background:#5a1a1a; color:#ff6b6b; font-weight:700; }
 .top-section { margin-bottom:24px; }
-.top-section h3 { color:#fff; font-size:16px; margin-bottom:12px; }
+.top-section h3 { color:#fff; font-size:15px; margin-bottom:12px; }
 .top-cards { display:flex; gap:16px; flex-wrap:wrap; }
-.top-card { background:#16213e; border-radius:12px; padding:16px; flex:1; min-width:280px; border-left:4px solid #e94560; }
-.top-title { color:#fff; font-weight:600; font-size:15px; margin-bottom:6px; }
+.top-card { background:#16213e; border-radius:12px; padding:16px; flex:1; min-width:260px; border-left:4px solid #e94560; }
+.top-title { color:#fff; font-weight:600; font-size:14px; margin-bottom:6px; }
 .top-stats { color:#888; font-size:12px; margin-bottom:8px; }
-.example { color:#666; font-size:12px; font-style:italic; margin-top:6px; padding:8px 10px; background:#0f0f1a; border-radius:6px; line-height:1.4; }
+.example { color:#666; font-size:11px; font-style:italic; margin-top:6px; padding:8px 10px; background:#0f0f1a; border-radius:6px; line-height:1.4; }
 .footer { color:#444; font-size:11px; margin-top:32px; text-align:center; padding-top:16px; border-top:1px solid #1a1a2e; }
+.period-badge { display:inline-block; background:#3a86ff22; color:#3a86ff; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600; margin-left:8px; }
 </style>
 </head>
 <body>
 
-<h1>RSpace Support Dashboard</h1>
-<div class="subtitle">Служба поддержки | 2025-08 &mdash; 2026-03 | 105 инцидентов за 8 месяцев</div>
+<div class="header">
+    <div>
+        <h1>RSpace Support Dashboard</h1>
+        <div class="subtitle">Служба поддержки | 2025-08 &mdash; 2026-03 | <span id="periodLabel">105 инцидентов</span></div>
+    </div>
+    <select class="week-select" id="weekSelect" onchange="onWeekChange()">
+        <option value="all">All Time</option><option value="2026-W14">2026-W14</option><option value="2026-W13">2026-W13</option><option value="2026-W12">2026-W12</option><option value="2026-W11">2026-W11</option><option value="2026-W10">2026-W10</option><option value="2026-W09">2026-W09</option><option value="2026-W08">2026-W08</option><option value="2026-W07">2026-W07</option><option value="2026-W06">2026-W06</option><option value="2026-W04">2026-W04</option><option value="2026-W03">2026-W03</option><option value="2025-W51">2025-W51</option><option value="2025-W50">2025-W50</option><option value="2025-W49">2025-W49</option><option value="2025-W48">2025-W48</option><option value="2025-W47">2025-W47</option><option value="2025-W46">2025-W46</option><option value="2025-W45">2025-W45</option><option value="2025-W44">2025-W44</option><option value="2025-W43">2025-W43</option><option value="2025-W42">2025-W42</option><option value="2025-W41">2025-W41</option><option value="2025-W40">2025-W40</option><option value="2025-W39">2025-W39</option><option value="2025-W38">2025-W38</option><option value="2025-W37">2025-W37</option><option value="2025-W36">2025-W36</option><option value="2025-W35">2025-W35</option><option value="2025-W34">2025-W34</option>
+    </select>
+</div>
 
 <div class="kpi-row">
-    <div class="kpi"><div class="kpi-value">105</div><div class="kpi-label">Total Incidents</div></div>
-    <div class="kpi critical"><div class="kpi-value">32</div><div class="kpi-label">Critical</div></div>
-    <div class="kpi critical"><div class="kpi-value">12.4%</div><div class="kpi-label">Resolution Rate</div></div>
-    <div class="kpi good"><div class="kpi-value">0.7h</div><div class="kpi-label">Avg Fix Time</div></div>
+    <div class="kpi" id="kpiTotal"><div class="kpi-value" id="kpiTotalVal">105</div><div class="kpi-label">Incidents</div><div class="kpi-delta" id="kpiTotalDelta"></div></div>
+    <div class="kpi critical" id="kpiCrit"><div class="kpi-value" id="kpiCritVal">32</div><div class="kpi-label">Critical</div><div class="kpi-delta" id="kpiCritDelta"></div></div>
+    <div class="kpi critical"><div class="kpi-value" id="kpiResVal">12.4%</div><div class="kpi-label">Resolution Rate</div><div class="kpi-delta" id="kpiResDelta"></div></div>
+    <div class="kpi good"><div class="kpi-value" id="kpiFixVal">0.7h</div><div class="kpi-label">Avg Fix Time</div><div class="kpi-delta" id="kpiFixDelta"></div></div>
 </div>
 
 <div class="charts-row">
@@ -65,7 +80,7 @@ h1 { color:#fff; font-size:28px; margin-bottom:8px; }
 
 <div class="charts-row">
     <div class="chart-box">
-        <h3>Resolved vs Unresolved (по месяцам)</h3>
+        <h3>Resolved vs Unresolved</h3>
         <canvas id="stacked" height="260"></canvas>
     </div>
     <div class="chart-box">
@@ -74,7 +89,7 @@ h1 { color:#fff; font-size:28px; margin-bottom:8px; }
     </div>
 </div>
 
-<div class="heatmap">
+<div class="heatmap" id="heatmapSection">
     <h3>Heatmap: категория &times; месяц</h3>
     <table>
         <tr><th style="text-align:left">Категория</th><th>25-08</th><th>25-09</th><th>25-10</th><th>25-11</th><th>25-12</th><th>26-01</th><th>26-02</th><th>26-03</th></tr>
@@ -102,68 +117,141 @@ h1 { color:#fff; font-size:28px; margin-bottom:8px; }
         </div></div>
 </div>
 
-<div class="footer">Generated by RSpace Intelligence Pipeline &bull; Data: Служба поддержки Rspace TG &bull; 111 incidents analyzed</div>
+<div class="footer">Generated by RSpace Intelligence Pipeline &bull; <span id="footerInfo">111 incidents</span></div>
 
 <script>
-const colors6 = ['#e94560','#f0c040','#4ecca3','#3a86ff','#8338ec','#ff6b6b'];
+const C6 = ['#e94560','#f0c040','#4ecca3','#3a86ff','#8338ec','#ff6b6b'];
+const allWeeks = ["2025-W34", "2025-W35", "2025-W36", "2025-W37", "2025-W38", "2025-W39", "2025-W40", "2025-W41", "2025-W42", "2025-W43", "2025-W44", "2025-W45", "2025-W46", "2025-W47", "2025-W48", "2025-W49", "2025-W50", "2025-W51", "2026-W03", "2026-W04", "2026-W06", "2026-W07", "2026-W08", "2026-W09", "2026-W10", "2026-W11", "2026-W12", "2026-W13", "2026-W14"];
+const weeklyData = {"2025-W34": {"total": 3, "critical": 1, "resolved": 1, "res_rate": 33.3, "avg_fix": 0.0, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}}, "2025-W35": {"total": 3, "critical": 0, "resolved": 1, "res_rate": 33.3, "avg_fix": 0.3, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W36": {"total": 7, "critical": 1, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 5, "Прочие обращения": 1, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W37": {"total": 1, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W38": {"total": 5, "critical": 2, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 1, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 2, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}}, "2025-W39": {"total": 5, "critical": 3, "resolved": 1, "res_rate": 20.0, "avg_fix": 0.9, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 2, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W40": {"total": 7, "critical": 3, "resolved": 1, "res_rate": 14.3, "avg_fix": 0.6, "by_pattern": {"Объявления: прочие ошибки": 5, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}}, "2025-W41": {"total": 5, "critical": 3, "resolved": 2, "res_rate": 40.0, "avg_fix": 1.0, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 1, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W42": {"total": 5, "critical": 1, "resolved": 2, "res_rate": 40.0, "avg_fix": 0.7, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 2, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 1, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W43": {"total": 5, "critical": 2, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 4, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W44": {"total": 2, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 0, "Прочие обращения": 1, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W45": {"total": 6, "critical": 2, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 4, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W46": {"total": 3, "critical": 1, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 1, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W47": {"total": 5, "critical": 1, "resolved": 1, "res_rate": 20.0, "avg_fix": 0.6, "by_pattern": {"Объявления: прочие ошибки": 4, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W48": {"total": 5, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 2, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W49": {"total": 6, "critical": 2, "resolved": 1, "res_rate": 16.7, "avg_fix": 1.4, "by_pattern": {"Объявления: прочие ошибки": 4, "Прочие обращения": 2, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2025-W50": {"total": 1, "critical": 1, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}}, "2025-W51": {"total": 5, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 4, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W03": {"total": 5, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 1, "Оплата / биллинг": 2, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W04": {"total": 3, "critical": 2, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W06": {"total": 2, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W07": {"total": 4, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W08": {"total": 5, "critical": 1, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 2, "Прочие обращения": 2, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W09": {"total": 1, "critical": 1, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W10": {"total": 1, "critical": 1, "resolved": 1, "res_rate": 100.0, "avg_fix": 0.1, "by_pattern": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W11": {"total": 5, "critical": 1, "resolved": 1, "res_rate": 20.0, "avg_fix": 0.4, "by_pattern": {"Объявления: прочие ошибки": 3, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 1}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 1, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W12": {"total": 3, "critical": 2, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 2, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 2, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W13": {"total": 2, "critical": 2, "resolved": 1, "res_rate": 50.0, "avg_fix": 0.6, "by_pattern": {"Объявления: прочие ошибки": 0, "Прочие обращения": 1, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 1, "Оплата / биллинг": 1, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}, "2026-W14": {"total": 1, "critical": 0, "resolved": 0, "res_rate": 0.0, "avg_fix": null, "by_pattern": {"Объявления: прочие ошибки": 1, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}, "by_pattern_crit": {"Объявления: прочие ошибки": 0, "Прочие обращения": 0, "Оплата / биллинг": 0, "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована": 0, "Доступ / авторизация": 0, "Объявления сняты или не публикуются": 0}}};
+const patternLabels = ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгруже", "Доступ / авторизация", "Объявления сняты или не публикуются"];
+const patternKeys = ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгружен / выгрузка рассинхронизирована", "Доступ / авторизация", "Объявления сняты или не публикуются"];
 
-new Chart(document.getElementById('donut'), {
-    type: 'doughnut',
-    data: {
-        labels: ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгруже", "Доступ / авторизация", "Объявления сняты или не публикуются"],
-        datasets: [{ data: [53, 16, 13, 9, 6, 5], backgroundColor: colors6, borderWidth: 0, borderRadius: 4 }]
-    },
-    options: {
-        cutout: '55%',
-        plugins: { legend: { position:'right', labels: { color:'#ccc', font: { size:11 }, padding:12 } } }
-    }
-});
+const allTime = {
+    total: 105, critical: 32, resolved: 13,
+    resRate: 12.4, avgFix: 0.7,
+    patternVals: [53, 16, 13, 9, 6, 5],
+    patternCrits: [15, 2, 5, 3, 2, 2],
+    months: ["25-08", "25-09", "25-10", "25-11", "25-12", "26-01", "26-02", "26-03"],
+    bugs: [6, 19, 21, 18, 12, 7, 10, 11], crits: [1, 7, 8, 3, 3, 2, 2, 6],
+    resolvedByMonth: [2, 2, 4, 1, 1, 0, 0, 3],
+    unresolvedByMonth: [4, 17, 17, 17, 11, 7, 10, 8]
+};
 
-new Chart(document.getElementById('trend'), {
-    type: 'bar',
-    data: {
-        labels: ["25-08", "25-09", "25-10", "25-11", "25-12", "26-01", "26-02", "26-03"],
-        datasets: [
-            { label:'Total', data:[6, 19, 21, 18, 12, 7, 10, 11], backgroundColor:'#3a86ff88', borderRadius:4 },
-            { label:'Critical', data:[1, 7, 8, 3, 3, 2, 2, 6], backgroundColor:'#e9456088', borderRadius:4 }
-        ]
-    },
-    options: {
-        scales: { y: { ticks: { color:'#666' }, grid: { color:'#ffffff08' } }, x: { ticks: { color:'#888' }, grid: { display:false } } },
-        plugins: { legend: { labels: { color:'#ccc' } } }
-    }
-});
+let charts = {};
+const cOpts = { responsive:true, maintainAspectRatio:false };
 
-new Chart(document.getElementById('stacked'), {
-    type: 'bar',
-    data: {
-        labels: ["25-08", "25-09", "25-10", "25-11", "25-12", "26-01", "26-02", "26-03"],
-        datasets: [
-            { label:'Resolved', data:[2, 2, 4, 1, 1, 0, 0, 3], backgroundColor:'#4ecca388', borderRadius:4 },
-            { label:'Unresolved', data:[4, 17, 17, 17, 11, 7, 10, 8], backgroundColor:'#e9456088', borderRadius:4 }
-        ]
-    },
-    options: {
-        scales: { x: { stacked:true, ticks:{ color:'#888' }, grid:{ display:false } }, y: { stacked:true, ticks:{ color:'#666' }, grid:{ color:'#ffffff08' } } },
-        plugins: { legend: { labels: { color:'#ccc' } } }
-    }
-});
+function initCharts() {
+    charts.donut = new Chart(document.getElementById('donut'), {
+        type:'doughnut', data:{ labels:patternLabels, datasets:[{ data:allTime.patternVals, backgroundColor:C6, borderWidth:0, borderRadius:4 }] },
+        options:{ cutout:'55%', plugins:{ legend:{ position:'right', labels:{ color:'#ccc', font:{ size:11 }, padding:12 } } } }
+    });
+    charts.trend = new Chart(document.getElementById('trend'), {
+        type:'bar', data:{ labels:allTime.months, datasets:[
+            { label:'Total', data:allTime.bugs, backgroundColor:'#3a86ff88', borderRadius:4 },
+            { label:'Critical', data:allTime.crits, backgroundColor:'#e9456088', borderRadius:4 }
+        ] },
+        options:{ scales:{ y:{ ticks:{ color:'#666' }, grid:{ color:'#ffffff08' } }, x:{ ticks:{ color:'#888' }, grid:{ display:false } } }, plugins:{ legend:{ labels:{ color:'#ccc' } } } }
+    });
+    charts.stacked = new Chart(document.getElementById('stacked'), {
+        type:'bar', data:{ labels:allTime.months, datasets:[
+            { label:'Resolved', data:allTime.resolvedByMonth, backgroundColor:'#4ecca388', borderRadius:4 },
+            { label:'Unresolved', data:allTime.unresolvedByMonth, backgroundColor:'#e9456088', borderRadius:4 }
+        ] },
+        options:{ scales:{ x:{ stacked:true, ticks:{ color:'#888' }, grid:{ display:false } }, y:{ stacked:true, ticks:{ color:'#666' }, grid:{ color:'#ffffff08' } } }, plugins:{ legend:{ labels:{ color:'#ccc' } } } }
+    });
+    charts.critbar = new Chart(document.getElementById('critbar'), {
+        type:'bar', data:{ labels:patternLabels, datasets:[
+            { label:'Total', data:allTime.patternVals, backgroundColor:'#3a86ff88', borderRadius:4 },
+            { label:'Critical', data:allTime.patternCrits, backgroundColor:'#e9456088', borderRadius:4 }
+        ] },
+        options:{ indexAxis:'y', scales:{ x:{ ticks:{ color:'#666' }, grid:{ color:'#ffffff08' } }, y:{ ticks:{ color:'#ccc', font:{ size:11 } }, grid:{ display:false } } }, plugins:{ legend:{ labels:{ color:'#ccc' } } } }
+    });
+}
 
-new Chart(document.getElementById('critbar'), {
-    type: 'bar',
-    data: {
-        labels: ["Объявления: прочие ошибки", "Прочие обращения", "Оплата / биллинг", "Фиды: объект не должен быть выгруже", "Доступ / авторизация", "Объявления сняты или не публикуются"],
-        datasets: [
-            { label:'Total', data:[53, 16, 13, 9, 6, 5], backgroundColor:'#3a86ff88', borderRadius:4 },
-            { label:'Critical', data:[15, 2, 5, 3, 2, 2], backgroundColor:'#e9456088', borderRadius:4 }
-        ]
-    },
-    options: {
-        indexAxis:'y',
-        scales: { x: { ticks: { color:'#666' }, grid: { color:'#ffffff08' } }, y: { ticks: { color:'#ccc', font: { size:11 } }, grid: { display:false } } },
-        plugins: { legend: { labels: { color:'#ccc' } } }
-    }
-});
+function deltaHtml(cur, prev, invert) {
+    if (prev === null || prev === undefined) return '';
+    let d = cur - prev;
+    if (d === 0) return '<span class="delta-same">&mdash;</span>';
+    let arrow = d > 0 ? '&#9650;' : '&#9660;';
+    let cls = invert ? (d > 0 ? 'delta-up' : 'delta-down') : (d > 0 ? 'delta-down' : 'delta-up');
+    return `<span class="${cls}">${arrow} ${Math.abs(d)}</span>`;
+}
+
+function onWeekChange() {
+    const sel = document.getElementById('weekSelect').value;
+    if (sel === 'all') return showAllTime();
+
+    const w = weeklyData[sel];
+    if (!w) return;
+    const idx = allWeeks.indexOf(sel);
+    const prev = idx > 0 ? weeklyData[allWeeks[idx-1]] : null;
+
+    document.getElementById('kpiTotalVal').textContent = w.total;
+    document.getElementById('kpiCritVal').textContent = w.critical;
+    document.getElementById('kpiResVal').textContent = w.res_rate + '%';
+    document.getElementById('kpiFixVal').textContent = w.avg_fix !== null ? w.avg_fix + 'h' : '—';
+
+    document.getElementById('kpiTotalDelta').innerHTML = prev ? deltaHtml(w.total, prev.total, true) : '';
+    document.getElementById('kpiCritDelta').innerHTML = prev ? deltaHtml(w.critical, prev.critical, true) : '';
+    document.getElementById('kpiResDelta').innerHTML = prev ? deltaHtml(w.res_rate, prev.res_rate, false) : '';
+    document.getElementById('kpiFixDelta').innerHTML = '';
+
+    document.getElementById('periodLabel').textContent = w.total + ' инцидентов за ' + sel;
+
+    const pv = patternKeys.map(p => w.by_pattern[p] || 0);
+    const pc = patternKeys.map(p => w.by_pattern_crit[p] || 0);
+
+    charts.donut.data.datasets[0].data = pv;
+    charts.donut.update();
+
+    charts.critbar.data.datasets[0].data = pv;
+    charts.critbar.data.datasets[1].data = pc;
+    charts.critbar.update();
+
+    const nearWeeks = allWeeks.slice(Math.max(0, idx-3), idx+1);
+    const nwBugs = nearWeeks.map(wk => weeklyData[wk].total);
+    const nwCrits = nearWeeks.map(wk => weeklyData[wk].critical);
+    const nwResolved = nearWeeks.map(wk => weeklyData[wk].resolved);
+    const nwUnresolved = nearWeeks.map(wk => weeklyData[wk].total - weeklyData[wk].resolved);
+
+    charts.trend.data.labels = nearWeeks;
+    charts.trend.data.datasets[0].data = nwBugs;
+    charts.trend.data.datasets[1].data = nwCrits;
+    charts.trend.update();
+
+    charts.stacked.data.labels = nearWeeks;
+    charts.stacked.data.datasets[0].data = nwResolved;
+    charts.stacked.data.datasets[1].data = nwUnresolved;
+    charts.stacked.update();
+
+    document.getElementById('heatmapSection').style.display = 'none';
+}
+
+function showAllTime() {
+    document.getElementById('kpiTotalVal').textContent = allTime.total;
+    document.getElementById('kpiCritVal').textContent = allTime.critical;
+    document.getElementById('kpiResVal').textContent = allTime.resRate + '%';
+    document.getElementById('kpiFixVal').textContent = allTime.avgFix + 'h';
+    ['kpiTotalDelta','kpiCritDelta','kpiResDelta','kpiFixDelta'].forEach(id => document.getElementById(id).innerHTML = '');
+    document.getElementById('periodLabel').textContent = allTime.total + ' инцидентов';
+
+    charts.donut.data.datasets[0].data = allTime.patternVals;
+    charts.donut.update();
+    charts.trend.data.labels = allTime.months;
+    charts.trend.data.datasets[0].data = allTime.bugs;
+    charts.trend.data.datasets[1].data = allTime.crits;
+    charts.trend.update();
+    charts.stacked.data.labels = allTime.months;
+    charts.stacked.data.datasets[0].data = allTime.resolvedByMonth;
+    charts.stacked.data.datasets[1].data = allTime.unresolvedByMonth;
+    charts.stacked.update();
+    charts.critbar.data.datasets[0].data = allTime.patternVals;
+    charts.critbar.data.datasets[1].data = allTime.patternCrits;
+    charts.critbar.update();
+    document.getElementById('heatmapSection').style.display = '';
+}
+
+initCharts();
 </script>
 </body>
 </html>
