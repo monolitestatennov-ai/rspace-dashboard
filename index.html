@@ -44,6 +44,26 @@ h1 { color:#fff; font-size:26px; }
 .top-title { color:#fff; font-weight:600; font-size:14px; margin-bottom:6px; }
 .top-stats { color:#888; font-size:12px; margin-bottom:8px; }
 .example { color:#666; font-size:11px; font-style:italic; margin-top:6px; padding:8px 10px; background:#0f0f1a; border-radius:6px; line-height:1.4; }
+.solutions { margin-bottom:24px; padding-top:8px; }
+.solutions h2 { color:#fff; font-size:22px; margin-bottom:4px; }
+.solutions-subtitle { color:#888; font-size:13px; margin-bottom:20px; }
+.sol-cards { display:flex; gap:16px; flex-wrap:wrap; }
+.sol-card { background:#16213e; border-radius:12px; padding:24px; flex:1; min-width:300px; position:relative; overflow:hidden; }
+.sol-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+.sol-1::before { background:linear-gradient(90deg,#e94560,#ff6b6b); }
+.sol-2::before { background:linear-gradient(90deg,#f0c040,#ffdd57); }
+.sol-3::before { background:linear-gradient(90deg,#3a86ff,#4ecca3); }
+.sol-number { color:#ffffff15; font-size:64px; font-weight:900; position:absolute; top:8px; right:16px; line-height:1; }
+.sol-badge { display:inline-block; border-radius:6px; padding:3px 10px; font-size:11px; font-weight:700; margin-bottom:12px; }
+.sol-1 .sol-badge { background:#e9456022; color:#e94560; }
+.sol-2 .sol-badge { background:#f0c04022; color:#f0c040; }
+.sol-3 .sol-badge { background:#3a86ff22; color:#3a86ff; }
+.sol-title { color:#fff; font-size:17px; font-weight:700; margin-bottom:10px; }
+.sol-problem { color:#aaa; font-size:13px; line-height:1.5; margin-bottom:14px; }
+.sol-problem b { color:#ccc; }
+.sol-actions { margin-bottom:14px; }
+.sol-action { color:#ddd; font-size:13px; line-height:1.6; padding-left:4px; }
+.sol-impact { background:#0f0f1a; border-radius:8px; padding:10px 14px; color:#4ecca3; font-size:13px; font-weight:600; }
 .footer { color:#444; font-size:11px; margin-top:32px; text-align:center; padding-top:16px; border-top:1px solid #1a1a2e; }
 .period-badge { display:inline-block; background:#3a86ff22; color:#3a86ff; border-radius:6px; padding:4px 10px; font-size:12px; font-weight:600; margin-left:8px; }
 </style>
@@ -115,6 +135,49 @@ h1 { color:#fff; font-size:26px; }
             <div class="top-stats">13 cases &bull; 5 critical &bull; 15% resolved</div>
             <div class="example">&laquo;Ребят, скажите, а какая здесь логика выгрузки данного оповещения, что истекло, но при этом объект стоит в рекламе. Прост...&raquo;</div><div class="example">&laquo;Ребят, помогите, пожалуйста. Привязали с агентом карту, назначили подписку. Даже объект, который слетел, выставили в рек...&raquo;</div>
         </div></div>
+</div>
+
+<div class="solutions">
+    <h2>Системные решения</h2>
+    <div class="solutions-subtitle">На основе анализа 105 инцидентов за 8 месяцев</div>
+    <div class="sol-cards">
+        <div class="sol-card sol-1">
+            <div class="sol-number">01</div>
+            <div class="sol-badge">48% обращений</div>
+            <div class="sol-title">Видимость статуса объявлений</div>
+            <div class="sol-problem"><b>Проблема:</b> Агент не знает, опубликовано ли объявление. Узнаёт только когда пишет в поддержку. Нет обратной связи от площадок (Авито, ЦИАН, Домклик).</div>
+            <div class="sol-actions">
+                <div class="sol-action">&bull; Status page каждого объявления в ЛК: отправлено &rarr; принято &rarr; опубликовано &rarr; ошибка</div>
+                <div class="sol-action">&bull; Автопроверка статуса через 15&ndash;30 мин после отправки фида</div>
+                <div class="sol-action">&bull; Pre-flight валидация перед отправкой: фото, видео, телефон, формат</div>
+            </div>
+            <div class="sol-impact">Убирает 48% обращений в поддержку. Агент видит проблему сам.</div>
+        </div>
+        <div class="sol-card sol-2">
+            <div class="sol-number">02</div>
+            <div class="sol-badge">Тренд &uarr; x3 за квартал</div>
+            <div class="sol-title">Транзакционная целостность биллинга</div>
+            <div class="sol-problem"><b>Проблема:</b> Пересборка подписок ломает связь &laquo;заплатил &rarr; получил&raquo;. Двойные списания, объявления слетают после оплаты, тариф нельзя отредактировать.</div>
+            <div class="sol-actions">
+                <div class="sol-action">&bull; Ledger (журнал транзакций): оплата &rarr; активация &rarr; остаток &mdash; видим агенту</div>
+                <div class="sol-action">&bull; Версионирование тарифов: старые подписки по старой логике до конца периода</div>
+                <div class="sol-action">&bull; 5 тестовых сценариев перед каждым изменением тарифов</div>
+            </div>
+            <div class="sol-impact">Предотвращает потерю денег и доверия при каждом обновлении подписок.</div>
+        </div>
+        <div class="sol-card sol-3">
+            <div class="sol-number">03</div>
+            <div class="sol-badge">88% не закрываются</div>
+            <div class="sol-title">Поддержка как источник бэклога</div>
+            <div class="sol-problem"><b>Проблема:</b> Resolution rate 12%. Баги обсуждаются, но не закрываются и не попадают в спринт. Повторяющиеся проблемы не анализируются.</div>
+            <div class="sol-actions">
+                <div class="sol-action">&bull; Каждое обращение &rarr; тикет в Kanban (уже автоматизировано)</div>
+                <div class="sol-action">&bull; SLA: критичный &mdash; ответ 1 час, фикс 24 часа</div>
+                <div class="sol-action">&bull; Если паттерн повторяется 3+ раз/мес &rarr; автоматически в спринт</div>
+            </div>
+            <div class="sol-impact">Делает техдолг видимым. Повторяющиеся проблемы перестают &laquo;не замечаться&raquo;.</div>
+        </div>
+    </div>
 </div>
 
 <div class="footer">Generated by RSpace Intelligence Pipeline &bull; <span id="footerInfo">111 incidents</span></div>
