@@ -143,39 +143,27 @@ h1 { color:#fff; font-size:26px; }
     <div class="sol-cards">
         <div class="sol-card sol-1">
             <div class="sol-number">01</div>
-            <div class="sol-badge">48% обращений</div>
-            <div class="sol-title">Видимость статуса объявлений</div>
-            <div class="sol-problem"><b>Проблема:</b> Агент не знает, опубликовано ли объявление. Узнаёт только когда пишет в поддержку. Нет обратной связи от площадок (Авито, ЦИАН, Домклик).</div>
-            <div class="sol-actions">
-                <div class="sol-action">&bull; Status page каждого объявления в ЛК: отправлено &rarr; принято &rarr; опубликовано &rarr; ошибка</div>
-                <div class="sol-action">&bull; Автопроверка статуса через 15&ndash;30 мин после отправки фида</div>
-                <div class="sol-action">&bull; Pre-flight валидация перед отправкой: фото, видео, телефон, формат</div>
-            </div>
-            <div class="sol-impact">Убирает 48% обращений в поддержку. Агент видит проблему сам.</div>
+            <div class="sol-badge">49% обращений</div>
+            <div class="sol-title">Улучшение фильтрации объявлений</div>
+            <div class="sol-problem"><b>Проблема:</b> Большинство обращений связано с ошибками в объявлениях, включая проблемы с фильтрацией объектов в админке. Это вызывает недовольство клиентов и снижает их доверие к платформе.</div>
+            <div class="sol-actions"><div class="sol-action">&bull; Провести аудит текущей системы фильтрации объявлений</div><div class="sol-action">&bull; Внедрить более надежные алгоритмы фильтрации</div><div class="sol-action">&bull; Обучить пользователей эффективному использованию фильтров</div></div>
+            <div class="sol-impact">Уменьшение количества обращений по этой проблеме на 30% и повышение удовлетворенности клиентов.</div>
         </div>
         <div class="sol-card sol-2">
             <div class="sol-number">02</div>
-            <div class="sol-badge">Тренд &uarr; x3 за квартал</div>
-            <div class="sol-title">Транзакционная целостность биллинга</div>
-            <div class="sol-problem"><b>Проблема:</b> Пересборка подписок ломает связь &laquo;заплатил &rarr; получил&raquo;. Двойные списания, объявления слетают после оплаты, тариф нельзя отредактировать.</div>
-            <div class="sol-actions">
-                <div class="sol-action">&bull; Ledger (журнал транзакций): оплата &rarr; активация &rarr; остаток &mdash; видим агенту</div>
-                <div class="sol-action">&bull; Версионирование тарифов: старые подписки по старой логике до конца периода</div>
-                <div class="sol-action">&bull; 5 тестовых сценариев перед каждым изменением тарифов</div>
-            </div>
-            <div class="sol-impact">Предотвращает потерю денег и доверия при каждом обновлении подписок.</div>
+            <div class="sol-badge">19% обращений</div>
+            <div class="sol-title">Оптимизация системы оплаты</div>
+            <div class="sol-problem"><b>Проблема:</b> Проблемы с оплатой и биллингом составляют значительную часть обращений, включая критические случаи, когда клиенты не могут оформить подписку или выложить объекты.</div>
+            <div class="sol-actions"><div class="sol-action">&bull; Обновить и протестировать систему оплаты для устранения ошибок</div><div class="sol-action">&bull; Создать подробные инструкции по оплате для пользователей</div><div class="sol-action">&bull; Внедрить систему уведомлений о статусе оплаты</div></div>
+            <div class="sol-impact">Снижение критических обращений по оплате на 50% и улучшение пользовательского опыта.</div>
         </div>
         <div class="sol-card sol-3">
             <div class="sol-number">03</div>
-            <div class="sol-badge">88% не закрываются</div>
-            <div class="sol-title">Поддержка как источник бэклога</div>
-            <div class="sol-problem"><b>Проблема:</b> Resolution rate 12%. Баги обсуждаются, но не закрываются и не попадают в спринт. Повторяющиеся проблемы не анализируются.</div>
-            <div class="sol-actions">
-                <div class="sol-action">&bull; Каждое обращение &rarr; тикет в Kanban (уже автоматизировано)</div>
-                <div class="sol-action">&bull; SLA: критичный &mdash; ответ 1 час, фикс 24 часа</div>
-                <div class="sol-action">&bull; Если паттерн повторяется 3+ раз/мес &rarr; автоматически в спринт</div>
-            </div>
-            <div class="sol-impact">Делает техдолг видимым. Повторяющиеся проблемы перестают &laquo;не замечаться&raquo;.</div>
+            <div class="sol-badge">Тренд x3</div>
+            <div class="sol-title">Синхронизация выгрузки объектов</div>
+            <div class="sol-problem"><b>Проблема:</b> Растущее количество обращений связано с рассинхронизацией выгрузки объектов, что мешает пользователям своевременно публиковать свои объявления.</div>
+            <div class="sol-actions"><div class="sol-action">&bull; Разработать механизм автоматической проверки синхронизации</div><div class="sol-action">&bull; Улучшить интеграцию с внешними платформами</div><div class="sol-action">&bull; Предоставить пользователям инструменты для самостоятельной диагностики проблем</div></div>
+            <div class="sol-impact">Сокращение времени решения проблем с выгрузкой на 40% и повышение доверия пользователей к системе.</div>
         </div>
     </div>
 </div>
